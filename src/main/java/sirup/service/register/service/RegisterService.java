@@ -9,6 +9,8 @@ import sirup.service.register.model.Registration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class RegisterService {
 
@@ -20,25 +22,27 @@ public class RegisterService {
         this.collection = database.getCollection("registrations");
     }
 
-    public boolean create(Registration registration) {
+    public Optional<String> create(Registration registration) {
         Document queryDocument = new Document();
         queryDocument.put("serviceAddress", registration.serviceAddress());
         if (this.collection.find(queryDocument).into(new ArrayList<>()).size() > 0) {
-            return false;
+            return Optional.empty();
         }
         Document document = new Document();
+        String serviceId = UUID.randomUUID().toString();
+        document.put("serviceId", serviceId);
         document.put("serviceName", registration.serviceName());
         document.put("serviceAddress", registration.serviceAddress());
         document.put("manifest", registration.manifest());
         this.collection.insertOne(document);
-        return true;
+        return Optional.of(serviceId);
     }
     public FindIterable<Document> findAll() {
         return this.collection.find();
     }
-    public boolean remove(Registration registration) {
+    public boolean remove(String serviceId) {
         Document queryDocument = new Document();
-        queryDocument.put("serviceAddress", registration.serviceAddress());
+        queryDocument.put("serviceId", serviceId);
         return this.collection.findOneAndDelete(queryDocument) != null;
     }
 }

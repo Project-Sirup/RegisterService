@@ -36,13 +36,24 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>sirup.service.java.generator.Main</mainClass>
+                    <mainClass>sirup.service.register.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
+
+        <!-- Sirup Dependencies -->
+
+        <dependency>
+            <groupId>sirup.service.log.rpc.proto</groupId>
+            <artifactId>log-rpc</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
+        <!-- Sirup Dependencies -->
+
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver</artifactId>
