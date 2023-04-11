@@ -47,6 +47,7 @@ public class RegisterController {
                 new Registration(
                         (String) document.get("serviceName"),
                         (String) document.get("serviceAddress"),
+                        (String) document.get("serviceId"),
                         document.get("manifest"))).collect(Collectors.toList());
         return this.gson.toJson(new ReturnObj<>(200,"registrations found",registrations));
     }
