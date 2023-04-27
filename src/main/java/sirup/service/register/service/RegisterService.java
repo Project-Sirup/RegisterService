@@ -4,13 +4,9 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import sirup.service.register.controller.RegisterController;
 import sirup.service.register.model.Registration;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 public class RegisterService {
 
@@ -22,20 +18,20 @@ public class RegisterService {
         this.collection = database.getCollection("registrations");
     }
 
-    public Optional<String> create(Registration registration) {
+    public boolean create(Registration registration) {
         Document queryDocument = new Document();
         queryDocument.put("serviceAddress", registration.serviceAddress());
         if (this.collection.find(queryDocument).into(new ArrayList<>()).size() > 0) {
-            return Optional.empty();
+            return false;
         }
         Document document = new Document();
-        String serviceId = UUID.randomUUID().toString();
-        document.put("serviceId", serviceId);
+        //String serviceId = UUID.randomUUID().toString();
+        document.put("serviceId", registration.serviceId());
         document.put("serviceName", registration.serviceName());
         document.put("serviceAddress", registration.serviceAddress());
         document.put("manifest", registration.manifest());
         this.collection.insertOne(document);
-        return Optional.of(serviceId);
+        return true;
     }
     public FindIterable<Document> findAll() {
         return this.collection.find();
