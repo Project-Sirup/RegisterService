@@ -10,6 +10,12 @@ import sirup.service.register.service.RegisterService;
 import spark.Request;
 import spark.Response;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +49,11 @@ public class RegisterController {
         }
         logger.info("Registering service [" + id(registerRequest.registration().serviceId()) + "]" +
                 "(" + registerRequest.registration().serviceName() + ")");
+        try {
+            notifyUsers(registerRequest.registration().serviceName());
+        } catch (URISyntaxException | IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
         return this.gson.toJson(new ReturnObj<>(201,"registration added"));
     }
     private record RegisterRequest(Registration registration, String serviceToken) {}
@@ -67,5 +78,19 @@ public class RegisterController {
         private ReturnObj(int statusCode, String message) {
             this(statusCode, message, null);
         }
+    }
+
+    private record InviteNotificationObject(String eventType, String message) {}
+    private void notifyUsers(String serviceName) throws URISyntaxException, IOException, InterruptedException {
+        //System.out.println("Notifying " + invite.receiverId());
+        InviteNotificationObject ino = new InviteNotificationObject("global", "New generation service added: " + serviceName);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://127.0.0.1:2104/api/v1/trigger"))
+                .setHeader("Content-Type","Application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(this.gson.toJson(ino)))
+                .build();
+        HttpClient client = HttpClient.newBuilder().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
     }
 }

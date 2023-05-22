@@ -37,9 +37,11 @@ public class Api {
         path("/api/v1", () -> {
             get("/health", (req, res) -> "ok");
             RegisterController registerController = new RegisterController();
-            post("",    registerController::register);
-            get("",     registerController::getRegister);
-            delete("/:serviceId",  registerController::unregister);
+            path("/register", () -> {
+                post("",    registerController::register);
+                get("",     registerController::getRegister);
+                delete("/:serviceId",  registerController::unregister);
+            });
         });
         logger.info("Server started, listening on 2100");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
