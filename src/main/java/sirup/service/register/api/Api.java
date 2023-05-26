@@ -14,7 +14,7 @@ public class Api {
     private final LogClient logger = LogClient.getInstance();
 
     public void start() {
-        port(Env.PORT);
+        port(Env.REG_PORT);
         before("*",(request, response) -> {
             response.header("Access-Control-Allow-Origin", "*");
             response.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");

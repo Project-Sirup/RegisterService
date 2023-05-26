@@ -41,6 +41,8 @@ public class RegisterController {
         String serviceToken = registerRequest.serviceToken();
         String serviceId = registerRequest.registration().serviceId();
 
+        logger.debug("attempting register of " + serviceId);
+
         if(!auth.auth(serviceToken, serviceId, SystemAccess.SERVICE.id)){
             return this.gson.toJson(new ReturnObj<>(498, "invalid service credentials"));
         }
@@ -85,7 +87,7 @@ public class RegisterController {
         //System.out.println("Notifying " + invite.receiverId());
         InviteNotificationObject ino = new InviteNotificationObject("global", "New generation service added: " + serviceName);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://127.0.0.1:2104/api/v1/trigger"))
+                .uri(new URI("http://notificationservice:2104/api/v1/trigger"))
                 .setHeader("Content-Type","Application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(this.gson.toJson(ino)))
                 .build();

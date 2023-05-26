@@ -6,8 +6,8 @@ import sirup.service.register.api.Api;
 
 public class Main {
     public static void main(String[] args) {
-        LogClient.init("localhost", 2102, "RegisterService");
-        AuthClient.init("localhost",2101);
+        LogClient.init("logservice", 2102, "RegisterService");
+        AuthClient.init("authservice",2101);
         new Api().start();
     }
 }
