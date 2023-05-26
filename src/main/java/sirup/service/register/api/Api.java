@@ -43,7 +43,7 @@ public class Api {
                 delete("/:serviceId",  registerController::unregister);
             });
         });
-        logger.info("Server started, listening on 2100");
+        logger.info("Server started, listening on " + Env.REG_PORT);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 logger.warn("Shutting down");
